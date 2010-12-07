@@ -208,6 +208,7 @@ class Client(object):
             'wsgi.multiprocess': True,
             'wsgi.multithread':  False,
             'wsgi.run_once':     False,
+            'ppy_original_path' : request['ppy_original_path'],
         }
         environ.update(self.defaults)
         environ.update(request)
@@ -274,10 +275,12 @@ class Client(object):
             'PATH_INFO':       urllib.unquote(parsed[2]),
             'QUERY_STRING':    urlencode(data, doseq=True) or parsed[4],
             'REQUEST_METHOD': 'GET',
-            'wsgi.input':      FakePayload('')
+            'wsgi.input':      FakePayload(''),
+            'ppy_original_path': path
+            
         }
         r.update(extra)
-
+        
         response = self.request(**r)
         if follow:
             response = self._handle_redirects(response)
@@ -307,6 +310,7 @@ class Client(object):
             'QUERY_STRING':   parsed[4],
             'REQUEST_METHOD': 'POST',
             'wsgi.input':     FakePayload(post_data),
+            'ppy_original_path': path,
         }
         r.update(extra)
 
@@ -325,7 +329,8 @@ class Client(object):
             'PATH_INFO':       urllib.unquote(parsed[2]),
             'QUERY_STRING':    urlencode(data, doseq=True) or parsed[4],
             'REQUEST_METHOD': 'HEAD',
-            'wsgi.input':      FakePayload('')
+            'wsgi.input':      FakePayload(''),
+            'ppy_original_path': path,
         }
         r.update(extra)
 
@@ -343,7 +348,8 @@ class Client(object):
             'PATH_INFO':       urllib.unquote(parsed[2]),
             'QUERY_STRING':    urlencode(data, doseq=True) or parsed[4],
             'REQUEST_METHOD': 'OPTIONS',
-            'wsgi.input':      FakePayload('')
+            'wsgi.input':      FakePayload(''),
+            'ppy_original_path': path,
         }
         r.update(extra)
 
@@ -370,6 +376,7 @@ class Client(object):
             'QUERY_STRING':   urlencode(data, doseq=True) or parsed[4],
             'REQUEST_METHOD': 'PUT',
             'wsgi.input':     FakePayload(post_data),
+            'ppy_original_path': path,
         }
         r.update(extra)
 
@@ -387,7 +394,8 @@ class Client(object):
             'PATH_INFO':       urllib.unquote(parsed[2]),
             'QUERY_STRING':    urlencode(data, doseq=True) or parsed[4],
             'REQUEST_METHOD': 'DELETE',
-            'wsgi.input':      FakePayload('')
+            'wsgi.input':      FakePayload(''),
+            'ppy_original_path': path,
         }
         r.update(extra)
 

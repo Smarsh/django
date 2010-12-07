@@ -601,8 +601,8 @@ class WSGIRequestHandler(BaseHTTPRequestHandler):
         if not self.parse_request(): # An error code has been sent, just exit
             return
         env = self.get_environ()
-        env['raw_requestline'] = self.raw_requestline
-        env['original_path'] = self.path
+        env['ppy_raw_requestline'] = self.raw_requestline
+        env['ppy_original_path'] = self.path
         handler = ServerHandler(self.rfile, self.wfile, self.get_stderr(), env)
         handler.request_handler = self      # backpointer for logging
         handler.run(self.server.get_app())
