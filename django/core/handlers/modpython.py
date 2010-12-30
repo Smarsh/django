@@ -131,6 +131,8 @@ class ModPythonRequest(http.HttpRequest):
 
     def _get_meta(self):
         "Lazy loader that returns self.META dictionary"
+        # Look at http://redmine.perpetually.com/redmine/issues/51 for
+        # more information about these modifications
         if not hasattr(self, '_meta'):
             self._meta = {
                 'AUTH_TYPE':         self._req.ap_auth_type,
@@ -149,6 +151,7 @@ class ModPythonRequest(http.HttpRequest):
                 'SERVER_NAME':       self._req.server.server_hostname,
                 'SERVER_PORT':       self._req.connection.local_addr[1],
                 'SERVER_PROTOCOL':   self._req.protocol,
+                'ppy_original_path': self._req.unparsed_uri,
                 'SERVER_SOFTWARE':   'mod_python'
             }
             for key, value in self._req.headers_in.items():

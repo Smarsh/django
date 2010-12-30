@@ -94,6 +94,10 @@ class WSGIRequest(http.HttpRequest):
         self.method = environ['REQUEST_METHOD'].upper()
         self._post_parse_error = False
 
+        # Look at http://redmine.perpetually.com/redmine/issues/51 for
+        # more information about these modifications
+        self.META['ppy_original_path'] = self.environ['ppy_original_path']
+
     def __repr__(self):
         # Since this is called as part of error handling, we need to be very
         # robust against potentially malformed input.
@@ -122,6 +126,16 @@ class WSGIRequest(http.HttpRequest):
     def get_full_path(self):
         # RFC 3986 requires query string arguments to be in the ASCII range.
         # Rather than crash if this doesn't happen, we encode defensively.
+
+
+        
+        # For ppy_original_path I tried to modify this function to not
+        # use iri_to_uri, that didn't get the untouched path as well
+        # as modifications to basehttp.py do, or the
+        # self._req.unparsed_uri property in modpython.py worked, so I
+        # took them out.  Look at http://redmine.perpetually.com/redmine/issues/51
+        
+        
         return '%s%s' % (self.path, self.environ.get('QUERY_STRING', '') and ('?' + iri_to_uri(self.environ.get('QUERY_STRING', ''))) or '')
 
     def is_secure(self):
