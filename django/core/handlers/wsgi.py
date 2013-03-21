@@ -96,7 +96,10 @@ class WSGIRequest(http.HttpRequest):
 
         # Look at http://redmine.perpetually.com/redmine/issues/51 for
         # more information about these modifications
-        self.META['ppy_original_path'] = self.environ['ppy_original_path']
+        if self.environ.has_key('ppy_original_path'):
+            self.META['ppy_original_path'] = self.environ['ppy_original_path']
+        else:
+            self.META['ppy_original_path'] = None
 
     def __repr__(self):
         # Since this is called as part of error handling, we need to be very
