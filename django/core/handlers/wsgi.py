@@ -96,7 +96,10 @@ class WSGIRequest(http.HttpRequest):
 
         # Look at http://redmine.perpetually.com/redmine/issues/51 for
         # more information about these modifications
-        self.META['ppy_original_path'] = self.environ['ppy_original_path']
+        try:
+            self.META['ppy_original_path'] = self.environ['ppy_original_path']
+        except:
+            self.META['ppy_original_path'] = None
 
     def __repr__(self):
         # Since this is called as part of error handling, we need to be very
@@ -128,14 +131,14 @@ class WSGIRequest(http.HttpRequest):
         # Rather than crash if this doesn't happen, we encode defensively.
 
 
-        
+
         # For ppy_original_path I tried to modify this function to not
         # use iri_to_uri, that didn't get the untouched path as well
         # as modifications to basehttp.py do, or the
         # self._req.unparsed_uri property in modpython.py worked, so I
         # took them out.  Look at http://redmine.perpetually.com/redmine/issues/51
-        
-        
+
+
         return '%s%s' % (self.path, self.environ.get('QUERY_STRING', '') and ('?' + iri_to_uri(self.environ.get('QUERY_STRING', ''))) or '')
 
     def is_secure(self):
@@ -271,4 +274,3 @@ class WSGIHandler(base.BaseHandler):
             response_headers.append(('Set-Cookie', str(c.output(header=''))))
         start_response(status, response_headers)
         return response
-
